@@ -21,6 +21,7 @@ Power Query M is an essential part of the modern data stack, integral not only i
 - [`CleanEmail`](functions/CleanEmail.pq) - Enhance data reliability with thorough email validation.
 - [`DeduplicateByKey`](functions/DeduplicateByKey.pq) - Achieve cleaner datasets by removing duplicate entries.
 - [`ExcludeUniformColumns`](functions/ExcludeUniformColumns.pq) - Focus analysis on varied data by excluding uniform columns.
+- [`FilterColumnsByDistinctValues`](functions/FilterColumnsByDistinctValues.pq) - Optimize dataset specificity by preserving columns with a number of distinct values above a defined threshold, facilitating precise control over data granularity and uniqueness.
 - [`KeepUniformColumns`](functions/KeepUniformColumns.pq) - Simplify templates and reporting by keeping uniform columns.
 - [`KeepOnlyDistinctColumns`](functions/KeepOnlyDistinctColumns.pq) - Refine data integrity by retaining only the columns with values that are entirely unique or meet a specified closeness to uniqueness, allowing for a nuanced approach to data deduplication and anomaly detection.
 
