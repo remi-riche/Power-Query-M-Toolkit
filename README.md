@@ -1,19 +1,19 @@
 # Power-Query-M-Toolkit for Advanced Data Solutions
 
-Harness the full potential of data transformation in Excel, Power BI, and Microsoft Fabric with the `Power-Query-M-Toolkit`. Our community-driven repository offers an array of Power Query M functions optimized for comprehensive analytical solutions, from data movement to data science.
+Harness the full potential of data transformation in Excel, Power BI, Power Platform dataflows, and Microsoft Fabric with the `Power-Query-M-Toolkit`. Our community-driven repository offers an array of Power Query M functions optimized for comprehensive analytical solutions, from data movement to data science, making it the future of efficient data processing.
 
 ## Table of Contents
 - [Introduction](#introduction)
 - [Function Library](#function-library)
 - [Platform Compatibility](#platform-compatibility)
-- [Microsoft Fabric Integration](#microsoft-fabric-integration)
+- [Future-Ready Data Processing](#future-ready-data-processing)
 - [Getting Started](#getting-started)
 - [Contributing](#contributing)
 - [License](#license)
 - [Contact](#contact)
 
 ## Introduction
-Power Query M is an essential part of the modern data stack in Excel, Power BI Dataflows, Azure Data Factory, and now Microsoft Fabric. The `Power-Query-M-Toolkit` expands on the native functionalities, enabling users to perform advanced data manipulation tasks with ease and precision.
+Power Query M is an essential part of the modern data stack, integral not only in Excel, Power BI Dataflows, Azure Data Factory but also in Power Platform dataflows, ensuring seamless, integrated analytics workflows. The `Power-Query-M-Toolkit` is the cornerstone for current and future data processing needs, simplifying complex tasks through its intuitive and powerful functions.
 
 ## Function Library
 - [`CleanPhoneNumber`](functions/CleanPhoneNumber.pq) - Streamline communication by standardizing phone number formats.
@@ -23,29 +23,30 @@ Power Query M is an essential part of the modern data stack in Excel, Power BI D
 - [`KeepUniformColumns`](functions/KeepUniformColumns.pq) - Simplify templates and reporting by keeping uniform columns.
 
 ## Platform Compatibility
-Our toolkit is designed to be versatile and is tested for compatibility with:
+Our toolkit is robust and flexible, tested for compatibility with and highly effective in:
 - **Excel Power Query**: Supercharge your Excel data wrangling capabilities.
 - **Power BI Dataflows**: Seamlessly integrate with Power BI for analytics and reporting.
-- **Azure Data Factory (ADF)**: Leverage in ADF for comprehensive ETL processes.
-- **Microsoft Fabric**: Optimize for an all-in-one analytical solution that spans from data movement to data science.
+- **Power Platform Dataflows**: The key to unlocking advanced data manipulation within the Power Platform ecosystem.
+- **Azure Data Factory (ADF)**: Employ in ADF for comprehensive ETL processes.
+- **Microsoft Fabric**: Capitalize on an all-in-one analytical solution that spans from data movement to data science.
 
-## Microsoft Fabric Integration
-`Power-Query-M-Toolkit` is fully compatible with Microsoft Fabric, a cutting-edge analytical platform that empowers users to handle data effortlessly across various stages of data processing. Our functions integrate smoothly, ensuring that whether you're moving data or crafting complex data models, you have the right tools at your disposal.
+## Future-Ready Data Processing
+With the rapid evolution of data platforms, the `Power-Query-M-Toolkit` stands ready as the future of data processing. It empowers users to navigate the evolving landscape with tools that are easy to learn and use, adaptable to new technologies, and capable of handling the complexities of tomorrow's data challenges.
 
 ## Getting Started
-To make the most of these functions within your data projects, follow our simple setup guide:
+Embark on your journey with the Power-Query-M-Toolkit by following these simple steps:
 1. Select the function you need from our [Function Library](#function-library).
 2. Copy its `.pq` file's contents from the raw view on GitHub.
 3. Paste the code into your Power Query Editor, Dataflow, or Microsoft Fabric pipeline.
 4. Adjust the parameters as needed to tailor the function to your data scenario.
 
 ## Contributing
-Dive into the world of data transformation by contributing to the `Power-Query-M-Toolkit`. [Find out how](CONTRIBUTING.md) you can contribute to enhancing analytics and data science capabilities for users worldwide.
+Join us in shaping the future of data transformation by contributing to the `Power-Query-M-Toolkit`. Your insights and expertise can help enhance the toolkit for users around the globe. [Learn how to contribute](CONTRIBUTING.md).
 
 ## License
 This toolkit is shared under the MIT License, inviting broad use and collaborative enhancements. See the [LICENSE](LICENSE) file for details.
 
 ## Contact
-Got questions or suggestions? We'd love to hear from you! Connect with us through [GitHub Issues](https://github.com/remi-riche/Power-Query-M-Toolkit/issues) or send a message to Rémi RICHE(mailto:r.riche@dataipa.com).
+Questions, feedback, or ideas? We're all ears! Reach out to us through [GitHub Issues](https://github.com/remi-riche/Power-Query-M-Toolkit/issues) or get in touch with Rémi RICHE at [r.riche@dataipa.com](mailto:r.riche@dataipa.com).
 
-Explore the toolkit: [https://github.com/remi-riche/Power-Query-M-Toolkit](https://github.com/remi-riche/Power-Query-M-Toolkit)
+Discover the toolkit: [https://github.com/remi-riche/Power-Query-M-Toolkit](https://github.com/remi-riche/Power-Query-M-Toolkit)
