@@ -1,0 +1,62 @@
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Packages #
+############
+# It's a good idea to ignore package directories to ensure you don't accidentally include package contents in your repository. 
+# The packages themselves will be restored by package managers.
+**/packages/*
+**/node_modules/*
+**/[Vv]endor/
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor directories and files #
+###############################
+.vscode/
+*.swp
+*.bak
+*.tmp
+*~.nib
+local.properties
+.settings/
+.idea/
+*.iml
+*.iws
+*.sublime-workspace
+*.sublime-project
+
+# Power Query M files should not be ignored, so they are not listed here.
+
+# Documentation files #
+#######################
+# You might want to ignore certain documentation files if they are automatically generated
+# or if they contain sensitive information.
+# However, if your docs are a part of the repository, do not ignore them.
+
+# Other #
+#########
+# Add any other files you wish to ignore.
+# Sometimes, files that contain sensitive data or configuration information are ignored.
+*.env
+*.config
