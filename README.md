@@ -16,14 +16,55 @@ Harness the full potential of data transformation in Excel, Power BI, Power Plat
 Power Query M is an essential part of the modern data stack, integral not only in Excel, Power BI Dataflows, Azure Data Factory but also in Power Platform dataflows, ensuring seamless, integrated analytics workflows. The `Power-Query-M-Toolkit` is the cornerstone for current and future data processing needs, simplifying complex tasks through its intuitive and powerful functions.
 
 ## Function Library
+
+### Data Normalization and Standardization
 - [`AlphabetizeColumns`](functions/AlphabetizeColumns.pq) - Enhance data readability by reordering table columns alphabetically.
 - [`CleanPhoneNumber`](functions/CleanPhoneNumber.pq) - Streamline communication by standardizing phone number formats.
 - [`CleanEmail`](functions/CleanEmail.pq) - Enhance data reliability with thorough email validation.
+- [`NormalizeUnicode`](functions/NormalizeUnicode.pq) - Standardize text to Unicode Normalization Form C for consistent encoding.
+- [`StandardizeDateFormats`](functions/StandardizeDateFormats.pq) - Convert a variety of date formats into a single standardized format.
+
+### Data Deduplication
 - [`DeduplicateByKey`](functions/DeduplicateByKey.pq) - Achieve cleaner datasets by removing duplicate entries.
-- [`ExcludeUniformColumns`](functions/ExcludeUniformColumns.pq) - Focus analysis on varied data by excluding uniform columns.
-- [`FilterColumnsByDistinctValues`](functions/FilterColumnsByDistinctValues.pq) - Optimize dataset specificity by preserving columns with a number of distinct values above a defined threshold, facilitating precise control over data granularity and uniqueness.
-- [`KeepUniformColumns`](functions/KeepUniformColumns.pq) - Simplify templates and reporting by keeping uniform columns.
 - [`KeepOnlyDistinctColumns`](functions/KeepOnlyDistinctColumns.pq) - Refine data integrity by retaining only the columns with values that are entirely unique or meet a specified closeness to uniqueness, allowing for a nuanced approach to data deduplication and anomaly detection.
+- [`FuzzyDeduplicate`](functions/FuzzyDeduplicate.pq) - Remove near-duplicate entries using fuzzy string matching algorithms.
+- [`CrossTableDeduplicate`](functions/CrossTableDeduplicate.pq) - Deduplicate entries across multiple related tables based on complex logic.
+
+### Data Reduction
+- [`ExcludeUniformColumns`](functions/ExcludeUniformColumns.pq) - Focus analysis on varied data by excluding uniform columns.
+- [`KeepUniformColumns`](functions/KeepUniformColumns.pq) - Simplify templates and reporting by keeping uniform columns.
+- [`PatternBasedDeduplication`](functions/PatternBasedDeduplication.pq) - Remove duplicates by identifying repeating patterns in text data.
+
+### Data Specification
+- [`FilterColumnsByDistinctValues`](functions/FilterColumnsByDistinctValues.pq) - Optimize dataset specificity by preserving columns with a number of distinct values above a defined threshold, facilitating precise control over data granularity and uniqueness.
+
+### Data Enrichment
+- [`SentimentAnalysis`](functions/SentimentAnalysis.pq) - Analyze text data to extract sentiment scores, categorizing inputs as positive, negative, or neutral.
+- [`DataTypeConversion`](functions/DataTypeConversion.pq) - Convert data types with advanced parsing for mixed-format columns.
+
+### Data Transformation
+- [`NestedJSONFlatten`](functions/NestedJSONFlatten.pq) - Flatten deeply nested JSON structures into tabular format for analysis.
+- [`DynamicPivot`](functions/DynamicPivot.pq) - Pivot data based on dynamic sets of categories and aggregation rules.
+
+### Data Integration
+- [`SmartMerge`](functions/SmartMerge.pq) - Merge tables with the ability to handle mismatched schemas and automate column mapping.
+- [`TemporalDataAlignment`](functions/TemporalDataAlignment.pq) - Align disparate time series data by resampling and interpolation.
+
+### Data Quality Assurance
+- [`ValidateCustomPatterns`](functions/ValidateCustomPatterns.pq) - Check data against custom regex patterns for complex validation rules.
+- [`AuditChangeTracking`](functions/AuditChangeTracking.pq) - Create a log of changes for auditing data transformations over time.
+
+### Custom Calculations and Aggregations
+- [`WeightedAverage`](functions/WeightedAverage.pq) - Calculate weighted averages for complex grouped data scenarios.
+- [`BucketizeNumericRanges`](functions/BucketizeNumericRanges.pq) - Segment numeric data into custom-defined ranges or buckets.
+
+### Advanced Analytics
+- [`CalculateTrends`](functions/CalculateTrends.pq) - Assess data trends and generate predictive insights.
+- [`PerformClusterAnalysis`](functions/PerformClusterAnalysis.pq) - Segment data into clusters for advanced categorization and analysis.
+
+### Data Governance
+- [`MaskSensitiveData`](functions/MaskSensitiveData.pq) - Anonymize or redact sensitive information in compliance with data governance policies.
+- [`TrackDataLineage`](functions/TrackDataLineage.pq) - Provide a function to track and visualize the lineage of data transformations.
 
 
 ## Platform Compatibility
