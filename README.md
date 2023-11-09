@@ -16,6 +16,7 @@ Harness the full potential of data transformation in Excel, Power BI, Power Plat
 Power Query M is an essential part of the modern data stack, integral not only in Excel, Power BI Dataflows, Azure Data Factory but also in Power Platform dataflows, ensuring seamless, integrated analytics workflows. The `Power-Query-M-Toolkit` is the cornerstone for current and future data processing needs, simplifying complex tasks through its intuitive and powerful functions.
 
 ## Function Library
+- [`AlphabetizeColumns`](functions/AlphabetizeColumns.pq) - Enhance data readability by reordering table columns alphabetically.
 - [`CleanPhoneNumber`](functions/CleanPhoneNumber.pq) - Streamline communication by standardizing phone number formats.
 - [`CleanEmail`](functions/CleanEmail.pq) - Enhance data reliability with thorough email validation.
 - [`DeduplicateByKey`](functions/DeduplicateByKey.pq) - Achieve cleaner datasets by removing duplicate entries.
