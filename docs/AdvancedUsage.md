@@ -24,12 +24,12 @@ Customize the toolkit's functions to suit your specific data scenarios. Here's a
 
 ```m
 let
-    OriginalFunction = (param1 as type1, param2 as type2) as returnType =>
+    OriginalFunction   = (param1 as type1, param2 as type2) as returnType =>
     let
         // Insert the original function code here
     in
         OriginalResult,
-    CustomFunction = (param1 as type1, param2 as type2, newParam as newType) as returnType =>
+    CustomFunction     = (param1 as type1, param2 as type2, newParam as newType) as returnType =>
     let
         OriginalResult = OriginalFunction(param1, param2),
         // Insert custom logic here utilizing newParam
