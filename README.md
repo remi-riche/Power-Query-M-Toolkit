@@ -51,9 +51,9 @@ Power Query M is an essential part of the modern data stack, integral not only i
 - [`TemporalDataAlignment`](functions/TemporalDataAlignment.pq) - Align disparate time series data by resampling and interpolation.
 
 ### Data Quality Assurance
-- [`ValidateCustomPatterns`](functions/ValidateCustomPatterns.pq) - Check data against custom regex patterns for complex validation rules.
 - [`AuditChangeTracking`](functions/AuditChangeTracking.pq) - Create a log of changes for auditing data transformations over time.
-
+- [`CreateTimestampWithTimezoneHandling`](functions/CreateTimestampWithTimezoneHandling.pq) - Generate accurate timestamps considering timezone shifts and daylight saving time changes, enhancing data reliability in time-sensitive reports.
+- [`ValidateCustomPatterns`](functions/ValidateCustomPatterns.pq) - Check data against custom regex patterns for complex validation rules.
 ### Custom Calculations and Aggregations
 - [`WeightedAverage`](functions/WeightedAverage.pq) - Calculate weighted averages for complex grouped data scenarios.
 - [`BucketizeNumericRanges`](functions/BucketizeNumericRanges.pq) - Segment numeric data into custom-defined ranges or buckets.
