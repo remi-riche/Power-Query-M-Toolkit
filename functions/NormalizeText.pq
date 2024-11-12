@@ -1,6 +1,6 @@
 /*
 Développeur : Rémi RICHE
-Version : 2024.04.27.04
+Version : 2024.04.27.10
 Email : r.riche@dataipa.com
 
 Cette fonction Power Query M personnalisée, 'NormalizeText', est conçue pour normaliser le texte. Elle convertit le texte en minuscules, remplace les caractères accentués et spéciaux par leurs équivalents non accentués, transforme les lettres stylisées en lettres standard, retire les emojis et autres symboles, et standardise les espaces (y compris les tabulations et les espaces multiples). Elle prend une chaîne de caractères en entrée (qui peut être null) et retourne la chaîne normalisée.
@@ -9,127 +9,117 @@ Cette fonction Power Query M personnalisée, 'NormalizeText', est conçue pour n
 let
     NormalizeText = (inputText as nullable text) as text =>
     let
-        // 1. Vérifier si le texte est null
+        // Étape 1: Remplacer les valeurs null par une chaîne vide
         CheckedText = if inputText = null then "" else inputText,
 
-        // 2. Convertir le texte en minuscules
+        // Étape 2: Convertir le texte en minuscules
         LowercaseText = Text.Lower(CheckedText),
 
-        // 3. Remplacer les caractères accentués et spéciaux par des non accentués
-        ReplaceAccentsAndSpecialChars = 
+        // Étape 3: Remplacer les caractères accentués et spéciaux
+        ReplaceAccents = 
             let
-                AccentedChars = {
-                    "á","à","â","ä","ã","å","ā","ă","ą",
-                    "é","è","ê","ë","ē","ė","ę",
-                    "í","ì","î","ï","ī","į","ì",
-                    "ó","ò","ô","ö","õ","ø","ō","ő","ð",
-                    "ú","ù","û","ü","ū","ů","ű","ų",
-                    "ç","ñ","ß","œ","æ",
-                    "þ","ž","ÿ","ý","µ"
-                },
-                NonAccentedChars = {
-                    "a","a","a","a","a","a","a","a","a",
-                    "e","e","e","e","e","e","e",
-                    "i","i","i","i","i","i","i",
-                    "o","o","o","o","o","o","o","o","o",
-                    "u","u","u","u","u","u","u","u",
-                    "c","n","ss","oe","ae",
-                    "th","z","y","y","u"
-                },
-                ReplacedText = List.Accumulate(
-                    List.Zip({AccentedChars, NonAccentedChars}), 
-                    LowercaseText, 
-                    (state, replacement) => Text.Replace(state, replacement{0}, replacement{1})
-                )
+                // Table de remplacement des caractères accentués et spéciaux
+                AccentReplacements = #table(
+                    {"AccentedChar", "Replacement"},
+                    {
+                        // Lettres accentuées communes
+                        {"á", "a"}, {"à", "a"}, {"â", "a"}, {"ä", "a"}, {"ã", "a"}, {"å", "a"}, {"ā", "a"}, {"ă", "a"}, {"ą", "a"}, {"æ", "ae"},
+                        {"ç", "c"}, {"ć", "c"}, {"č", "c"}, {"ĉ", "c"}, {"ċ", "c"},
+                        {"é", "e"}, {"è", "e"}, {"ê", "e"}, {"ë", "e"}, {"ē", "e"}, {"ė", "e"}, {"ę", "e"},
+                        {"í", "i"}, {"ì", "i"}, {"î", "i"}, {"ï", "i"}, {"ī", "i"}, {"į", "i"},
+                        {"ñ", "n"}, {"ń", "n"}, {"ň", "n"}, {"ņ", "n"}, {"ŋ", "n"},
+                        {"ó", "o"}, {"ò", "o"}, {"ô", "o"}, {"ö", "o"}, {"õ", "o"}, {"ø", "o"}, {"ō", "o"}, {"ő", "o"}, {"œ", "oe"}, {"ð", "d"},
+                        {"ß", "ss"}, {"ś", "s"}, {"ŝ", "s"}, {"ş", "s"}, {"ș", "s"}, {"š", "s"},
+                        {"ť", "t"}, {"ţ", "t"}, {"ț", "t"}, {"þ", "th"},
+                        {"ú", "u"}, {"ù", "u"}, {"û", "u"}, {"ü", "u"}, {"ū", "u"}, {"ů", "u"}, {"ű", "u"}, {"ų", "u"},
+                        {"ý", "y"}, {"ÿ", "y"},
+                        {"ž", "z"}, {"ź", "z"}, {"ż", "z"},
+                        {"ľ", "l"}, {"ĺ", "l"}, {"ł", "l"},
+                        {"ď", "d"}, {"đ", "d"},
+                        {"ğ", "g"}, {"ĝ", "g"}, {"ġ", "g"},
+                        {"ħ", "h"},
+                        {"ĵ", "j"},
+                        {"ŕ", "r"}, {"ř", "r"},
+                        {"µ", "u"},
+                        {"ﬁ", "fi"}, {"ﬂ", "fl"}
+                        // Ajouter d'autres remplacements si nécessaire
+                    }
+                ),
+
+                // Convertir la table en liste de records
+                AccentReplacementsList = Table.ToRecords(AccentReplacements),
+
+                // Fonction pour remplacer les caractères accentués
+                ReplaceAccentsFunc = (text as text) as text =>
+                    List.Accumulate(
+                        AccentReplacementsList,
+                        text,
+                        (state, current) => Text.Replace(state, current[AccentedChar], current[Replacement])
+                    )
             in
-                ReplacedText,
+                ReplaceAccentsFunc(LowercaseText),
 
-        // 4. Remplacer les lettres stylisées par des lettres standard
-        ReplaceStylizedLetters =
+        // Étape 4: Remplacer les lettres stylisées par des lettres standard
+        ReplaceStylized = 
             let
-                StylizedChars = {
-                    // Fraktur Letters (minuscule)
-                    "𝔞","𝔟","𝔠","𝔡","𝔢","𝔣","𝔤","𝔥","𝔦","𝔧","𝔨","𝔩","𝔪","𝔫","𝔬","𝔭","𝔮","𝔯","𝔰","𝔱","𝔲","𝔳","𝔴","𝔵","𝔶","𝔷",
-                    // Fraktur Letters (majuscule)
-                    "𝔄","𝔅","𝔇","𝔈","𝔉","𝔊","𝔍","𝔎","𝔏","𝔐","𝔑","𝔒","𝔓","𝔔","𝔖","𝔗","𝔘","𝔙","𝔚","𝔛","𝔜","ℌ",
-                    // Script Letters (minuscule)
-                    "𝓪","𝓫","𝓬","𝓭","𝓮","𝓯","𝓰","𝓱","𝓲","𝓳","𝓴","𝓵","𝓶","𝓷","𝓸","𝓹","𝓺","𝓻","𝓼","𝓽","𝓾","𝓿","𝔀","𝔁","𝔂","𝔃",
-                    // Script Letters (majuscule)
-                    "𝓐","𝓑","𝓒","𝓓","𝓔","𝓕","𝓖","𝓗","𝓘","𝓙","𝓚","𝓛","𝓜","𝓝","𝓞","𝓟","𝓠","𝓡","𝓢","𝓣","𝓤","𝓥","𝓦","𝓧","𝓨","𝓩",
-                    // Bold Letters (minuscule)
-                    "𝐚","𝐛","𝐜","𝐝","𝐞","𝐟","𝐠","𝐡","𝐢","𝐣","𝐤","𝐥","𝐦","𝐧","𝐨","𝐩","𝐪","𝐫","𝐬","𝐭","𝐮","𝐯","𝐰","𝐱","𝐲","𝐳",
-                    // Bold Letters (majuscule)
-                    "𝐀","𝐁","𝐂","𝐃","𝐄","𝐅","𝐆","𝐇","𝐈","𝐉","𝐊","𝐋","𝐌","𝐍","𝐎","𝐏","𝐐","𝐑","𝐒","𝐓","𝐔","𝐕","𝐖","𝐗","𝐘","𝐙",
-                    // Italic Letters (minuscule)
-                    "𝒶","𝒷","𝒸","𝒹","𝒺","𝒻","𝒼","𝒽","𝒾","𝒿","𝓀","𝓁","𝓂","𝓃","𝓸","𝓅","𝓆","𝓇","𝓈","𝓉","𝓊","𝓋","𝓌","𝓍","𝓎","𝓏",
-                    // Italic Letters (majuscule)
-                    "𝒜","𝒝","𝒞","𝒟","𝒠","𝒡","𝒢","𝒣","𝒥","𝒦","𝒩","𝒪","𝒫","𝒬","𝒮","𝒯","𝒰","𝒱","𝒲","𝒳","𝒴","𝒵",
-                    // Bold Italic Letters (minuscule)
-                    "𝒶","𝒷","𝒸","𝒹","𝒺","𝒻","𝒼","𝒽","𝒾","𝒿","𝓀","𝓁","𝓂","𝓃","𝓸","𝓅","𝓆","𝓇","𝓈","𝓉","𝓊","𝓋","𝓌","𝓍","𝓎","𝓏",
-                    // Bold Italic Letters (majuscule)
-                    "𝒜","𝒝","𝒞","𝒟","𝒠","𝒡","𝒢","𝒣","𝒥","𝒦","𝒩","𝒪","𝒫","𝒬","𝒮","𝒯","𝒰","𝒱","𝒲","𝒳","𝒴","𝒵",
-                    // Sans-Serif Letters (minuscule)
-                    "𝗮","𝗯","𝗰","𝗱","𝗲","𝗳","𝗴","𝗵","𝗶","𝗷","𝗸","𝗹","𝗺","𝗻","𝗼","𝗽","𝗾","𝗿","𝘀","𝘁","𝘂","𝘃","𝘄","𝘅","𝘆","𝘇",
-                    // Sans-Serif Letters (majuscule)
-                    "𝗔","𝗕","𝗖","𝗗","𝗘","𝗙","𝗚","𝗛","𝗜","𝗝","𝗞","𝗟","𝗠","𝗡","𝗢","𝗣","𝗤","𝗥","𝗦","𝗧","𝗨","𝗩","𝗪","𝗫","𝗬","𝗭",
-                    // Monospace Letters (minuscule)
-                    "𝚊","𝚋","𝚌","𝚍","𝚎","𝚏","𝚐","𝚑","𝚒","𝚓","𝚔","𝚕","𝚖","𝚗","𝚘","𝚙","𝚚","𝚛","𝚜","𝚝","𝚞","𝚟","𝚠","𝚡","𝚢","𝚣",
-                    // Monospace Letters (majuscule)
-                    "𝙰","𝙱","𝙲","𝙳","𝙴","𝙵","𝙶","𝙷","𝙸","𝙹","𝙺","𝙻","𝙼","𝙽","𝙾","𝙿","𝚀","𝚁","𝚂","𝚃","𝚄","𝚅","𝚆","𝚇","𝚈","𝚉",
-                    // Superscript Letters and Numbers
-                    "ⁱ","⁰","¹","²","³","⁴","⁵","⁶","⁷","⁸","⁹","⁺","⁻","⁼","⁽","⁾",
-                    // Subscript Letters and Numbers
-                    "₀","₁","₂","₃","₄","₅","₆","₇","₈","₉","₊","₋","₌","₍","₎",
-                    // Other Stylized Characters
-                    "_","•","♡","❤","★","☆","✓","✔","✕","✖","✦","✧","❄","❇","❌","❎","✈","✉","✂","☎","☀","☁","☂","☃","☄","☑","☓","☞","☟","☠","☣","☤","☦","☪","☮","☯","☸","✡","✝","✞","✠"
-                },
-                StandardChars = {
-                    // Fraktur Letters
-                    "a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z",
-                    "a","b","d","e","f","g","j","k","l","m","n","o","p","q","s","t","u","v","w","x","y","h",
-                    // Script Letters
-                    "a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z",
-                    "a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z",
-                    // Bold Letters
-                    "a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z",
-                    "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z",
-                    // Italic Letters
-                    "a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z",
-                    "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z",
-                    // Bold Italic Letters
-                    "a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z",
-                    "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z",
-                    // Sans-Serif Letters
-                    "a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z",
-                    "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z",
-                    // Monospace Letters
-                    "a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z",
-                    "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z",
-                    // Superscript Letters and Numbers
-                    "i","0","1","2","3","4","5","6","7","8","9","+","-","=","(",")",
-                    // Subscript Letters and Numbers
-                    "0","1","2","3","4","5","6","7","8","9","+","-","=","(",")",
-                    // Other Stylized Characters
-                    " "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "," "
-                },
-                // Assurez-vous que les listes ont la même longueur
-                // Si ce n'est pas le cas, il faut ajuster les listes
-                // Ici, les listes sont conçues pour être de la même longueur
-                ReplacedStylizedText = List.Accumulate(
-                    List.Zip({StylizedChars, StandardChars}), 
-                    ReplaceAccentsAndSpecialChars, 
-                    (state, replacement) => Text.Replace(state, replacement{0}, replacement{1})
-                )
+                // Table de remplacement des caractères stylisés
+                StylizedReplacements = #table(
+                    {"StylizedChar", "Replacement"},
+                    {
+                        // Lettres mathématiques gras italique (Bold Italic) majuscules
+                        {"𝑨", "a"}, {"𝑩", "b"}, {"𝑪", "c"}, {"𝑫", "d"}, {"𝑬", "e"}, {"𝑭", "f"}, {"𝑮", "g"},
+                        {"𝑯", "h"}, {"𝑰", "i"}, {"𝑱", "j"}, {"𝑲", "k"}, {"𝑳", "l"}, {"𝑴", "m"}, {"𝑵", "n"},
+                        {"𝑶", "o"}, {"𝑷", "p"}, {"𝑸", "q"}, {"𝑹", "r"}, {"𝑺", "s"}, {"𝑻", "t"}, {"𝑼", "u"},
+                        {"𝑽", "v"}, {"𝑾", "w"}, {"𝑿", "x"}, {"𝒀", "y"}, {"𝒁", "z"},
+                        // Lettres mathématiques gras italique (Bold Italic) minuscules
+                        {"𝒂", "a"}, {"𝒃", "b"}, {"𝒄", "c"}, {"𝒅", "d"}, {"𝒆", "e"}, {"𝒇", "f"}, {"𝒈", "g"},
+                        {"𝒉", "h"}, {"𝒊", "i"}, {"𝒋", "j"}, {"𝒌", "k"}, {"𝒍", "l"}, {"𝒎", "m"}, {"𝒏", "n"},
+                        {"𝒐", "o"}, {"𝒑", "p"}, {"𝒒", "q"}, {"𝒓", "r"}, {"𝒔", "s"}, {"𝒕", "t"}, {"𝒖", "u"},
+                        {"𝒗", "v"}, {"𝒘", "w"}, {"𝒙", "x"}, {"𝒚", "y"}, {"𝒛", "z"},
+                        // Ajout des autres lettres stylisées précédemment incluses
+                        // Fraktur Letters
+                        {"𝔞", "a"}, {"𝔟", "b"}, {"𝔠", "c"}, {"𝔡", "d"}, {"𝔢", "e"}, {"𝔣", "f"}, {"𝔤", "g"},
+                        {"𝔥", "h"}, {"𝔦", "i"}, {"𝔧", "j"}, {"𝔨", "k"}, {"𝔩", "l"}, {"𝔪", "m"}, {"𝔫", "n"},
+                        {"𝔬", "o"}, {"𝔭", "p"}, {"𝔮", "q"}, {"𝔯", "r"}, {"𝔰", "s"}, {"𝔱", "t"}, {"𝔲", "u"},
+                        {"𝔳", "v"}, {"𝔴", "w"}, {"𝔵", "x"}, {"𝔶", "y"}, {"𝔷", "z"},
+                        {"𝔄", "a"}, {"𝔅", "b"}, {"𝔇", "d"}, {"𝔈", "e"}, {"𝔉", "f"}, {"𝔊", "g"}, {"𝔍", "j"},
+                        {"𝔎", "k"}, {"𝔏", "l"}, {"𝔐", "m"}, {"𝔑", "n"}, {"𝔒", "o"}, {"𝔓", "p"}, {"𝔔", "q"},
+                        {"𝔖", "s"}, {"𝔗", "t"}, {"𝔘", "u"}, {"𝔙", "v"}, {"𝔚", "w"}, {"𝔛", "x"}, {"𝔜", "y"},
+                        // Script Letters
+                        {"𝓪", "a"}, {"𝓫", "b"}, {"𝓬", "c"}, {"𝓭", "d"}, {"𝓮", "e"}, {"𝓯", "f"}, {"𝓰", "g"},
+                        {"𝓱", "h"}, {"𝓲", "i"}, {"𝓳", "j"}, {"𝓴", "k"}, {"𝓵", "l"}, {"𝓶", "m"}, {"𝓷", "n"},
+                        {"𝓸", "o"}, {"𝓹", "p"}, {"𝓺", "q"}, {"𝓻", "r"}, {"𝓼", "s"}, {"𝓽", "t"}, {"𝓾", "u"},
+                        {"𝓿", "v"}, {"𝔀", "w"}, {"𝔁", "x"}, {"𝔂", "y"}, {"𝔃", "z"},
+                        {"𝓐", "a"}, {"𝓑", "b"}, {"𝓒", "c"}, {"𝓓", "d"}, {"𝓔", "e"}, {"𝓕", "f"}, {"𝓖", "g"},
+                        {"𝓗", "h"}, {"𝓘", "i"}, {"𝓙", "j"}, {"𝓚", "k"}, {"𝓛", "l"}, {"𝓜", "m"}, {"𝓝", "n"},
+                        {"𝓞", "o"}, {"𝓟", "p"}, {"𝓠", "q"}, {"𝓡", "r"}, {"𝓢", "s"}, {"𝓣", "t"}, {"𝓤", "u"},
+                        {"𝓥", "v"}, {"𝓦", "w"}, {"𝓧", "x"}, {"𝓨", "y"}, {"𝓩", "z"},
+                        // Autres caractères stylisés
+                        {"♡", " "}, {"❤", " "}, {"♥", " "}, {"★", " "}, {"☆", " "}
+                        // Ajouter d'autres remplacements si nécessaire
+                    }
+                ),
+
+                // Convertir la table en liste de records
+                StylizedReplacementsList = Table.ToRecords(StylizedReplacements),
+
+                // Fonction pour remplacer les caractères stylisés
+                ReplaceStylizedFunc = (text as text) as text =>
+                    List.Accumulate(
+                        StylizedReplacementsList,
+                        text,
+                        (state, current) => Text.Replace(state, current[StylizedChar], current[Replacement])
+                    )
             in
-                ReplacedStylizedText,
+                ReplaceStylizedFunc(ReplaceAccents),
 
-        // 5. Supprimer les emojis et autres symboles en conservant uniquement les lettres a-z, les chiffres 0-9 et les espaces
-        RemoveEmojisAndSymbols = Text.Select(ReplaceStylizedLetters, {"a".."z", "0".."9", " "}), 
-
-        // 6. Remplacer les ponctuations et les caractères de contrôle par des espaces
-        ReplacePunctuationAndControlChars = 
+        // Étape 5: Supprimer les emojis et autres symboles en conservant uniquement les lettres a-z, les chiffres 0-9 et les espaces
+        RemoveEmojisAndSymbols = Text.Select(ReplaceStylized, {"a".."z", "0".."9", " "}),
+    
+        // Étape 6: Remplacer les ponctuations et les caractères de contrôle par des espaces
+        ReplacePunctuations = 
             let
-                Punctuations = {".", ",", ";", ":", "!", "?", "(", ")", "[", "]", "{", "}", "<", ">", "/", "\\", "|", "@", "#", "$", "%", "^", "&", "*", "+", "=", "~", "`", "'", "\"", "•", "♡", "❤", "★", "☆", "✓", "✔", "✕", "✖", "✦", "✧", "❄", "❇", "❌", "❎", "✈", "✉", "✂", "☎", "☀", "☁", "☂", "☃", "☄", "☑", "☓", "☞", "☟", "☠", "☣", "☤", "☦", "☪", "☮", "☯", "☸", "✡", "✝", "✞", "✠"},
+                Punctuations = {".", ",", ";", ":", "!", "?", "(", ")", "[", "]", "{", "}", "<", ">", "/", "\\", "|", "@", "#", "$", "%", "^", "&", "*", "+", "=", "~", "`", "'", "'"},
                 ReplaceWithSpace = List.Accumulate(
                     Punctuations, 
                     RemoveEmojisAndSymbols, 
@@ -138,15 +128,16 @@ let
             in
                 ReplaceWithSpace,
 
-        // 7. Remplacer les tabulations, retours à la ligne, etc., par des espaces
-        ReplaceControlChars = Text.Replace(ReplacePunctuationAndControlChars, "#(cr)", " "),
+        // Étape 7: Remplacer les caractères de contrôle (tabulations, retours à la ligne, etc.) par des espaces
+        ReplaceControlChars = Text.Replace(ReplacePunctuations, "#(cr)", " "),
         ReplaceControlChars2 = Text.Replace(ReplaceControlChars, "#(lf)", " "),
         ReplaceControlChars3 = Text.Replace(ReplaceControlChars2, "#(tab)", " "),
+        ReplaceControlCharsFinal = ReplaceControlChars3,
 
-        // 8. Remplacer les multiples espaces par un seul espace
-        SimplifiedText = Text.Combine(Text.Split(ReplaceControlChars3, " "), " "),
+        // Étape 8: Remplacer les multiples espaces par un seul espace
+        SimplifiedText = Text.Combine(List.Select(Text.Split(ReplaceControlCharsFinal, " "), each _ <> ""), " "),
 
-        // 9. Supprimer les espaces en début et fin de chaîne
+        // Étape 9: Supprimer les espaces en début et fin de chaîne
         TrimmedText = Text.Trim(SimplifiedText)
     in
         TrimmedText
